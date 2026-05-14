@@ -167,6 +167,156 @@
     white-space: nowrap;
     overflow: hidden;
   }
+
+  /* ── ZOOM CURSOR on all photo zones ── */
+  .grid-item,
+  .grid-item img,
+  .about-photo-item,
+  .about-photo-item img,
+  .about-photo-main,
+  .about-photo-main img,
+  .cat-card img,
+  .hero-img-block img,
+  #lbImg {
+    cursor: zoom-in !important;
+  }
+  /* Lightbox image: zoom-out when open */
+  .lightbox.open #lbImg { cursor: zoom-out !important; }
+
+  /* ── NO RIGHT-CLICK NOTICE ── */
+  #no-rightclick-toast {
+    position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: rgba(8,8,8,0.9); border: 1px solid rgba(200,200,200,0.15);
+    color: #c8c8c8; font-family: 'Syne', sans-serif;
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 0.7rem 1.6rem; pointer-events: none;
+    opacity: 0; transition: opacity 0.3s, transform 0.3s;
+    z-index: 99999; backdrop-filter: blur(10px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  #no-rightclick-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── ADMIN PANEL ── */
+  #admin-overlay {
+    display: none; position: fixed; inset: 0; z-index: 999999;
+    background: rgba(4,4,4,0.97); backdrop-filter: blur(24px);
+    overflow-y: auto;
+  }
+  #admin-overlay.open { display: flex; flex-direction: column; align-items: center; padding: 3rem 1.5rem; }
+  .admin-header {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; max-width: 900px; margin-bottom: 2.5rem;
+  }
+  .admin-logo {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem;
+    letter-spacing: 0.1em; color: #e8e8e8;
+  }
+  .admin-logo span { color: #c8c8c8; }
+  .admin-close {
+    background: none; border: 1px solid rgba(200,200,200,0.2);
+    color: #c8c8c8; font-family: 'Syne', sans-serif;
+    font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 0.55rem 1.2rem; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .admin-close:hover { border-color: #c8c8c8; color: #fff; }
+  .admin-body { width: 100%; max-width: 900px; }
+  .admin-tag {
+    font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: #888; margin-bottom: 2rem;
+  }
+  .admin-cats {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1px; background: rgba(200,200,200,0.1); margin-bottom: 2rem;
+  }
+  .admin-cat-tab {
+    background: rgba(255,255,255,0.02); border: none;
+    color: #888; font-family: 'Syne', sans-serif;
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 1rem 1.2rem; cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    text-align: left;
+  }
+  .admin-cat-tab.active, .admin-cat-tab:hover {
+    color: #e8e8e8; background: rgba(200,200,200,0.06);
+  }
+  .admin-cat-tab.active { border-left: 2px solid #c8c8c8; }
+  .admin-upload-zone {
+    border: 1px dashed rgba(200,200,200,0.2);
+    background: rgba(255,255,255,0.02);
+    padding: 3rem; text-align: center;
+    cursor: pointer; transition: border-color 0.3s, background 0.3s;
+    margin-bottom: 1.5rem; position: relative;
+  }
+  .admin-upload-zone:hover { border-color: rgba(200,200,200,0.5); background: rgba(255,255,255,0.04); }
+  .admin-upload-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .admin-upload-icon { font-size: 2.5rem; margin-bottom: 0.8rem; opacity: 0.4; }
+  .admin-upload-label {
+    font-family: 'Syne', sans-serif; font-size: 0.75rem;
+    letter-spacing: 0.2em; text-transform: uppercase; color: #888;
+  }
+  .admin-upload-sub { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: #555; margin-top: 0.4rem; }
+  .admin-preview-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 3px; margin-bottom: 1.5rem;
+  }
+  .admin-preview-item {
+    position: relative; aspect-ratio: 3/2; overflow: hidden; background: #111;
+  }
+  .admin-preview-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .admin-preview-del {
+    position: absolute; top: 0.4rem; right: 0.4rem;
+    background: rgba(0,0,0,0.75); border: 1px solid rgba(200,200,200,0.2);
+    color: #e8e8e8; font-size: 0.7rem; line-height: 1;
+    padding: 0.3rem 0.5rem; cursor: pointer; border-radius: 0;
+    transition: background 0.2s;
+  }
+  .admin-preview-del:hover { background: rgba(220,60,60,0.6); }
+  .admin-preview-badge {
+    position: absolute; bottom: 0.4rem; left: 0.4rem;
+    font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: #c8c8c8; background: rgba(8,8,8,0.7);
+    padding: 0.2rem 0.5rem;
+  }
+  .admin-status {
+    font-family: 'Inter', sans-serif; font-size: 0.78rem;
+    color: #6ee87a; padding: 0.6rem 0; min-height: 1.5rem;
+  }
+  #admin-login {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 80vh; gap: 1.5rem; width: 100%; max-width: 400px;
+  }
+  .admin-login-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem;
+    letter-spacing: 0.1em; color: #e8e8e8; text-align: center;
+  }
+  .admin-pw-input {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(200,200,200,0.15);
+    color: #e8e8e8; font-family: 'Syne', sans-serif;
+    font-size: 0.85rem; letter-spacing: 0.15em;
+    padding: 0.9rem 1.3rem; width: 100%; outline: none;
+    transition: border-color 0.3s;
+  }
+  .admin-pw-input:focus { border-color: rgba(200,200,200,0.5); }
+  .admin-pw-btn {
+    background: #c8c8c8; color: #080808;
+    border: none; padding: 0.9rem 2.5rem;
+    font-family: 'Syne', sans-serif; font-size: 0.75rem;
+    letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700;
+    cursor: pointer; width: 100%;
+    transition: background 0.2s;
+  }
+  .admin-pw-btn:hover { background: #e8e8e8; }
+  .admin-pw-err { color: #f08080; font-family: 'Inter', sans-serif; font-size: 0.78rem; }
+  .admin-info-box {
+    background: rgba(200,200,200,0.04); border: 1px solid rgba(200,200,200,0.1);
+    padding: 1rem 1.5rem; font-family: 'Inter', sans-serif;
+    font-size: 0.75rem; color: #666; line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  .admin-info-box strong { color: #c8c8c8; }
 </style>
 
 <style>
@@ -2022,6 +2172,51 @@
   <span class="footer-copy">Jaipur, Rajasthan</span>
 </footer>
 
+<!-- RIGHT-CLICK TOAST -->
+<div id="no-rightclick-toast">© MoodinPixels — All Rights Reserved</div>
+
+<!-- ADMIN PANEL OVERLAY -->
+<div id="admin-overlay">
+  <div id="admin-login">
+    <div class="admin-login-title">Admin<br>Access</div>
+    <p style="font-family:'Inter',sans-serif;font-size:0.75rem;color:#555;letter-spacing:0.15em;text-transform:uppercase;text-align:center;">MoodinPixels · Photo Manager</p>
+    <input type="password" class="admin-pw-input" id="admin-pw" placeholder="Enter password" onkeydown="if(event.key==='Enter')adminLogin()">
+    <button class="admin-pw-btn" onclick="adminLogin()">Unlock →</button>
+    <div class="admin-pw-err" id="admin-pw-err"></div>
+    <button style="background:none;border:none;color:#444;font-family:'Syne',sans-serif;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;margin-top:0.5rem;" onclick="adminClose()">← Back to site</button>
+  </div>
+  <div id="admin-dashboard" style="display:none;width:100%;">
+    <div class="admin-header">
+      <div class="admin-logo">Mood<span>in</span>Pixels <span style="font-size:0.85rem;color:#555;letter-spacing:0.1em;"> · Admin</span></div>
+      <button class="admin-close" onclick="adminClose()">✕ Close</button>
+    </div>
+    <div class="admin-body">
+      <p class="admin-tag">📁 Select a category, then upload photos — they appear on the site instantly.</p>
+      <div class="admin-info-box">
+        <strong>How it works:</strong> Photos are stored as Base64 in your browser's localStorage and load automatically every time the page opens. No server needed. Clearing browser data will remove uploaded photos — for a permanent solution, move files to your server folders.
+      </div>
+      <div class="admin-cats" id="admin-cat-tabs">
+        <button class="admin-cat-tab active" data-cat="concerts" onclick="adminSetCat(this)">Concerts</button>
+        <button class="admin-cat-tab" data-cat="dance" onclick="adminSetCat(this)">Dance</button>
+        <button class="admin-cat-tab" data-cat="dj" onclick="adminSetCat(this)">DJ</button>
+        <button class="admin-cat-tab" data-cat="fashion" onclick="adminSetCat(this)">Fashion</button>
+        <button class="admin-cat-tab" data-cat="music" onclick="adminSetCat(this)">Music</button>
+        <button class="admin-cat-tab" data-cat="photoshoot" onclick="adminSetCat(this)">Photoshoot</button>
+        <button class="admin-cat-tab" data-cat="sports" onclick="adminSetCat(this)">Sports</button>
+        <button class="admin-cat-tab" data-cat="wildlife" onclick="adminSetCat(this)">Wildlife</button>
+      </div>
+      <div class="admin-upload-zone" id="admin-drop-zone">
+        <input type="file" id="admin-file-input" accept="image/*" multiple onchange="adminHandleFiles(this.files)">
+        <div class="admin-upload-icon">📷</div>
+        <div class="admin-upload-label">Click or drag photos here</div>
+        <div class="admin-upload-sub">JPG, PNG, WEBP — multiple files supported</div>
+      </div>
+      <div class="admin-status" id="admin-status"></div>
+      <div class="admin-preview-grid" id="admin-preview"></div>
+    </div>
+  </div>
+</div>
+
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lbClose">✕</button>
@@ -2146,12 +2341,11 @@
 
   // Filter
   const filterBtns = document.querySelectorAll('.filter-btn');
-  const gridItems = document.querySelectorAll('#grid-all .grid-item');
   function applyFilter(f) {
     filterBtns.forEach(b => b.classList.remove('active'));
     const target = [...filterBtns].find(b => b.dataset.filter === f);
     if (target) target.classList.add('active');
-    gridItems.forEach(item => {
+    document.querySelectorAll('#grid-all .grid-item').forEach(item => {
       const show = f === 'all' || item.dataset.cat === f;
       item.style.display = show ? '' : 'none';
       if (show) {
@@ -2178,14 +2372,24 @@
   const lbPrev = document.getElementById('lbPrev');
   const lbNext = document.getElementById('lbNext');
   let currentIdx = 0;
-  const allGridItems = [...document.querySelectorAll('.grid-item[data-src]')];
-  allGridItems.forEach((item, i) => {
-    item.addEventListener('click', () => { currentIdx = i; lbImg.src = item.dataset.src; lb.classList.add('open'); });
-  });
+  function getLbItems() { return [...document.querySelectorAll('.grid-item[data-src]')]; }
+  function bindLbItem(item) {
+    if (item._lbBound) return;
+    item._lbBound = true;
+    item.addEventListener('click', () => {
+      const items = getLbItems();
+      currentIdx = items.indexOf(item);
+      lbImg.src = item.dataset.src;
+      lb.classList.add('open');
+    });
+  }
+  getLbItems().forEach(bindLbItem);
+  // expose for admin-added photos
+  window.rebindLightbox = function() { getLbItems().forEach(bindLbItem); };
   lbClose.addEventListener('click', () => lb.classList.remove('open'));
   lb.addEventListener('click', e => { if (e.target === lb) lb.classList.remove('open'); });
-  lbPrev.addEventListener('click', () => { currentIdx = (currentIdx - 1 + allGridItems.length) % allGridItems.length; lbImg.src = allGridItems[currentIdx].dataset.src; });
-  lbNext.addEventListener('click', () => { currentIdx = (currentIdx + 1) % allGridItems.length; lbImg.src = allGridItems[currentIdx].dataset.src; });
+  lbPrev.addEventListener('click', () => { const items = getLbItems(); currentIdx = (currentIdx - 1 + items.length) % items.length; lbImg.src = items[currentIdx].dataset.src; });
+  lbNext.addEventListener('click', () => { const items = getLbItems(); currentIdx = (currentIdx + 1) % items.length; lbImg.src = items[currentIdx].dataset.src; });
   document.addEventListener('keydown', e => {
     if (!lb.classList.contains('open')) return;
     if (e.key === 'Escape') lb.classList.remove('open');
@@ -2406,6 +2610,161 @@
   if (!title) return;
   let lastY = window.scrollY;
   window.addEventListener('scroll', () => { const dy = window.scrollY - lastY; title.style.transform = `skewX(${Math.max(-4, Math.min(4, dy * 0.15))}deg)`; lastY = window.scrollY; }, { passive: true });
+})();
+
+// ── DISABLE RIGHT-CLICK ──
+(function() {
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    const toast = document.getElementById('no-rightclick-toast');
+    if (!toast) return;
+    toast.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => toast.classList.remove('show'), 2200);
+  });
+})();
+
+// ── ADMIN PANEL ──
+(function() {
+  const ADMIN_HASH   = '#admin';
+  const ADMIN_PW     = 'moodin2025';   // ← CHANGE THIS PASSWORD
+  const STORE_KEY    = 'mip_admin_photos_v1';
+  const SESSION_KEY  = 'mip_admin_auth';
+  let activeCat      = 'concerts';
+
+  // ── Load stored photos into grid on page load ──
+  function loadStoredPhotos() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+      const grid = document.getElementById('grid-all');
+      if (!grid) return;
+      Object.entries(stored).forEach(([cat, photos]) => {
+        photos.forEach(photo => {
+          if (document.querySelector(`.grid-item[data-admin-id="${photo.id}"]`)) return;
+          const div = document.createElement('div');
+          div.className = 'grid-item';
+          div.dataset.cat = cat;
+          div.dataset.src = photo.src;
+          div.dataset.adminId = photo.id;
+          div.innerHTML = `<img src="${photo.src}" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">${cat.charAt(0).toUpperCase()+cat.slice(1)}</span></div>`;
+          // add corner brackets & film scan
+          const tl = document.createElement('div'); tl.className = 'corner-tl';
+          const br = document.createElement('div'); br.className = 'corner-br';
+          div.appendChild(tl); div.appendChild(br);
+          const scan = document.createElement('div'); scan.className = 'film-scan'; div.appendChild(scan);
+          div.addEventListener('mouseenter', () => { scan.style.display='none'; void scan.offsetWidth; scan.style.display=''; });
+          grid.appendChild(div);
+        });
+      });
+      // rebind lightbox for new items
+      if (typeof window.rebindLightbox === 'function') window.rebindLightbox();
+    } catch(e) {}
+  }
+
+  // ── Open admin panel ──
+  function openAdmin() {
+    const overlay = document.getElementById('admin-overlay');
+    overlay.classList.add('open');
+    const authed = sessionStorage.getItem(SESSION_KEY) === '1';
+    document.getElementById('admin-login').style.display = authed ? 'none' : 'flex';
+    document.getElementById('admin-dashboard').style.display = authed ? 'block' : 'none';
+    if (authed) renderAdminPreview();
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+  }
+
+  window.adminClose = function() {
+    document.getElementById('admin-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    if (location.hash === ADMIN_HASH) history.replaceState(null, '', location.pathname);
+  };
+
+  window.adminLogin = function() {
+    const pw = document.getElementById('admin-pw').value;
+    const err = document.getElementById('admin-pw-err');
+    if (pw === ADMIN_PW) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      document.getElementById('admin-login').style.display = 'none';
+      document.getElementById('admin-dashboard').style.display = 'block';
+      renderAdminPreview();
+    } else {
+      err.textContent = 'Wrong password. Try again.';
+      document.getElementById('admin-pw').value = '';
+      setTimeout(() => { err.textContent = ''; }, 2500);
+    }
+  };
+
+  window.adminSetCat = function(btn) {
+    document.querySelectorAll('.admin-cat-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCat = btn.dataset.cat;
+    renderAdminPreview();
+  };
+
+  window.adminHandleFiles = function(files) {
+    if (!files || !files.length) return;
+    const status = document.getElementById('admin-status');
+    status.textContent = 'Processing...';
+    let done = 0;
+    const stored = (() => { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); } catch(e) { return {}; } })();
+    if (!stored[activeCat]) stored[activeCat] = [];
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const id = 'admin_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+        stored[activeCat].push({ id, src: ev.target.result, name: file.name });
+        done++;
+        if (done === files.length) {
+          try { localStorage.setItem(STORE_KEY, JSON.stringify(stored)); } catch(e) {
+            status.style.color = '#f08080';
+            status.textContent = 'Storage full — try fewer/smaller photos.';
+            return;
+          }
+          status.style.color = '#6ee87a';
+          status.textContent = `✓ ${done} photo${done > 1 ? 's' : ''} added to ${activeCat}.`;
+          setTimeout(() => { status.textContent = ''; }, 3000);
+          loadStoredPhotos();
+          renderAdminPreview();
+          // reset file input
+          document.getElementById('admin-file-input').value = '';
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  function renderAdminPreview() {
+    const grid = document.getElementById('admin-preview');
+    if (!grid) return;
+    const stored = (() => { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); } catch(e) { return {}; } })();
+    const photos = stored[activeCat] || [];
+    if (!photos.length) { grid.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:0.75rem;color:#444;grid-column:1/-1;padding:1rem 0;">No admin-uploaded photos in this category yet.</p>'; return; }
+    grid.innerHTML = photos.map(p => `
+      <div class="admin-preview-item">
+        <img src="${p.src}" alt="">
+        <button class="admin-preview-del" onclick="adminDeletePhoto('${p.id}','${activeCat}')">✕</button>
+        <span class="admin-preview-badge">${activeCat}</span>
+      </div>`).join('');
+  }
+
+  window.adminDeletePhoto = function(id, cat) {
+    const stored = (() => { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); } catch(e) { return {}; } })();
+    if (stored[cat]) stored[cat] = stored[cat].filter(p => p.id !== id);
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(stored)); } catch(e) {}
+    // Remove from grid
+    const el = document.querySelector(`.grid-item[data-admin-id="${id}"]`);
+    if (el) el.remove();
+    renderAdminPreview();
+  };
+
+  // ── Watch for hash change ──
+  function checkHash() { if (location.hash === ADMIN_HASH) openAdmin(); }
+  window.addEventListener('hashchange', checkHash);
+  checkHash(); // check on load
+
+  // ── Load photos on every page open ──
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadStoredPhotos);
+  else loadStoredPhotos();
 })();
 
 // Cinematic letterbox
