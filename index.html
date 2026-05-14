@@ -2643,7 +2643,7 @@
     <div class="admin-body">
       <p class="admin-tag">📁 Select a category, then upload photos — they appear on the site instantly.</p>
       <div class="admin-info-box">
-        <strong>How it works:</strong> Photos are stored as Base64 in your browser's localStorage and load automatically every time the page opens. No server needed. Clearing browser data will remove uploaded photos — for a permanent solution, move files to your server folders.
+        <strong>Server upload active:</strong> Photos are uploaded directly to your server into the correct category folder (e.g. <code style="font-family:monospace;background:rgba(255,255,255,0.08);padding:0 4px;border-radius:3px;">Concert/</code>, <code style="font-family:monospace;background:rgba(255,255,255,0.08);padding:0 4px;border-radius:3px;">Dance/</code>). They appear on the site permanently for all visitors.
       </div>
       <div class="admin-cats" id="admin-cat-tabs">
         <button class="admin-cat-tab active" data-cat="concerts" onclick="adminSetCat(this)">Concerts</button>
@@ -3121,39 +3121,54 @@ window.toggleFaq = function(btn) {
 
 // ── ADMIN PANEL ──
 (function() {
-  const ADMIN_HASH   = '#admin';
-  const ADMIN_PW     = 'moodin2025';   // ← CHANGE THIS PASSWORD
-  const STORE_KEY    = 'mip_admin_photos_v1';
-  const SESSION_KEY  = 'mip_admin_auth';
-  let activeCat      = 'concerts';
+  const ADMIN_HASH  = '#admin';
+  const ADMIN_PW    = 'moodin2025';   // ← must match upload.php ADMIN_PASSWORD
+  const SESSION_KEY = 'mip_admin_auth';
+  const UPLOAD_URL  = 'upload.php';   // path to upload.php on your server
+  let activeCat     = 'concerts';
+  let adminPwCache  = '';             // remember pw for server calls during session
 
-  // ── Load stored photos into grid on page load ──
-  function loadStoredPhotos() {
-    try {
-      const stored = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
-      const grid = document.getElementById('grid-all');
-      if (!grid) return;
-      Object.entries(stored).forEach(([cat, photos]) => {
-        photos.forEach(photo => {
-          if (document.querySelector(`.grid-item[data-admin-id="${photo.id}"]`)) return;
-          const div = document.createElement('div');
-          div.className = 'grid-item';
-          div.dataset.cat = cat;
-          div.dataset.src = photo.src;
-          div.dataset.adminId = photo.id;
-          div.innerHTML = `<img src="${photo.src}" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">${cat.charAt(0).toUpperCase()+cat.slice(1)}</span></div>`;
-          // add corner brackets & film scan
-          const tl = document.createElement('div'); tl.className = 'corner-tl';
-          const br = document.createElement('div'); br.className = 'corner-br';
-          div.appendChild(tl); div.appendChild(br);
-          const scan = document.createElement('div'); scan.className = 'film-scan'; div.appendChild(scan);
-          div.addEventListener('mouseenter', () => { scan.style.display='none'; void scan.offsetWidth; scan.style.display=''; });
-          grid.appendChild(div);
-        });
-      });
-      // rebind lightbox for new items
-      if (typeof window.rebindLightbox === 'function') window.rebindLightbox();
-    } catch(e) {}
+  // ── Inject photos from server into the main gallery grid ──
+  function injectPhotosIntoGrid(cat, photos) {
+    const grid = document.getElementById('grid-all');
+    if (!grid) return;
+    photos.forEach(photo => {
+      if (document.querySelector(`.grid-item[data-admin-id="${photo.id}"]`)) return;
+      const div = document.createElement('div');
+      div.className = 'grid-item';
+      div.dataset.cat = cat;
+      div.dataset.src = photo.src;
+      div.dataset.adminId = photo.id;
+      div.innerHTML = `<img src="${photo.src}" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">${cat.charAt(0).toUpperCase()+cat.slice(1)}</span></div>`;
+      const tl = document.createElement('div'); tl.className = 'corner-tl';
+      const br = document.createElement('div'); br.className = 'corner-br';
+      div.appendChild(tl); div.appendChild(br);
+      const scan = document.createElement('div'); scan.className = 'film-scan'; div.appendChild(scan);
+      div.addEventListener('mouseenter', () => { scan.style.display='none'; void scan.offsetWidth; scan.style.display=''; });
+      grid.appendChild(div);
+    });
+    if (typeof window.rebindLightbox === 'function') window.rebindLightbox();
+  }
+
+  // ── Load all categories from server on page open ──
+  async function loadStoredPhotos() {
+    const cats = ['concerts','dance','dj','fashion','music','photoshoot','sports','wildlife'];
+    // We use the public list action (no password needed for read) — 
+    // if your server requires auth for listing, add password field here too
+    for (const cat of cats) {
+      try {
+        const fd = new FormData();
+        fd.append('action', 'list');
+        fd.append('password', ADMIN_PW);
+        fd.append('category', cat);
+        const res = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
+        if (!res.ok) continue;
+        const data = await res.json();
+        if (data.ok && data.photos && data.photos.length) {
+          injectPhotosIntoGrid(cat, data.photos);
+        }
+      } catch(e) { /* server unavailable, skip silently */ }
+    }
   }
 
   // ── Open admin panel ──
@@ -3164,7 +3179,6 @@ window.toggleFaq = function(btn) {
     document.getElementById('admin-login').style.display = authed ? 'none' : 'flex';
     document.getElementById('admin-dashboard').style.display = authed ? 'block' : 'none';
     if (authed) renderAdminPreview();
-    // Prevent body scroll
     document.body.style.overflow = 'hidden';
   }
 
@@ -3175,9 +3189,10 @@ window.toggleFaq = function(btn) {
   };
 
   window.adminLogin = function() {
-    const pw = document.getElementById('admin-pw').value;
+    const pw  = document.getElementById('admin-pw').value;
     const err = document.getElementById('admin-pw-err');
     if (pw === ADMIN_PW) {
+      adminPwCache = pw;
       sessionStorage.setItem(SESSION_KEY, '1');
       document.getElementById('admin-login').style.display = 'none';
       document.getElementById('admin-dashboard').style.display = 'block';
@@ -3196,68 +3211,118 @@ window.toggleFaq = function(btn) {
     renderAdminPreview();
   };
 
-  window.adminHandleFiles = function(files) {
+  // ── Upload files to server ──
+  window.adminHandleFiles = async function(files) {
     if (!files || !files.length) return;
     const status = document.getElementById('admin-status');
-    status.textContent = 'Processing...';
-    let done = 0;
-    const stored = (() => { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); } catch(e) { return {}; } })();
-    if (!stored[activeCat]) stored[activeCat] = [];
-    Array.from(files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = function(ev) {
-        const id = 'admin_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
-        stored[activeCat].push({ id, src: ev.target.result, name: file.name });
-        done++;
-        if (done === files.length) {
-          try { localStorage.setItem(STORE_KEY, JSON.stringify(stored)); } catch(e) {
-            status.style.color = '#f08080';
-            status.textContent = 'Storage full — try fewer/smaller photos.';
-            return;
-          }
-          status.style.color = '#6ee87a';
-          status.textContent = `✓ ${done} photo${done > 1 ? 's' : ''} added to ${activeCat}.`;
-          setTimeout(() => { status.textContent = ''; }, 3000);
-          loadStoredPhotos();
-          renderAdminPreview();
-          // reset file input
-          document.getElementById('admin-file-input').value = '';
+    status.style.color = '#c8c8c8';
+    status.textContent = `Uploading ${files.length} photo${files.length > 1 ? 's' : ''}…`;
+
+    const fd = new FormData();
+    fd.append('action',   'upload');
+    fd.append('password', adminPwCache || ADMIN_PW);
+    fd.append('category', activeCat);
+    Array.from(files).forEach(f => fd.append('photos[]', f));
+
+    try {
+      const res  = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
+      const data = await res.json();
+
+      if (data.ok) {
+        status.style.color = '#6ee87a';
+        const count = data.uploaded ? data.uploaded.length : files.length;
+        status.textContent = `✓ ${count} photo${count > 1 ? 's' : ''} saved to server.`;
+        if (data.errors && data.errors.length) {
+          status.textContent += ` (${data.errors.length} skipped)`;
         }
-      };
-      reader.readAsDataURL(file);
-    });
+        // Inject newly uploaded photos into gallery immediately
+        if (data.uploaded) injectPhotosIntoGrid(activeCat, data.uploaded);
+        renderAdminPreview();
+      } else {
+        status.style.color = '#f08080';
+        status.textContent = '✗ ' + (data.message || 'Upload failed.');
+      }
+    } catch(e) {
+      status.style.color = '#f08080';
+      status.textContent = '✗ Could not reach upload.php. Is it on the server?';
+    }
+
+    setTimeout(() => { status.textContent = ''; status.style.color = '#c8c8c8'; }, 5000);
+    document.getElementById('admin-file-input').value = '';
   };
 
-  function renderAdminPreview() {
-    const grid = document.getElementById('admin-preview');
+  // ── Render admin preview grid from server list ──
+  async function renderAdminPreview() {
+    const grid   = document.getElementById('admin-preview');
+    const status = document.getElementById('admin-status');
     if (!grid) return;
-    const stored = (() => { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); } catch(e) { return {}; } })();
-    const photos = stored[activeCat] || [];
-    if (!photos.length) { grid.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:0.75rem;color:#444;grid-column:1/-1;padding:1rem 0;">No admin-uploaded photos in this category yet.</p>'; return; }
-    grid.innerHTML = photos.map(p => `
-      <div class="admin-preview-item">
-        <img src="${p.src}" alt="">
-        <button class="admin-preview-del" onclick="adminDeletePhoto('${p.id}','${activeCat}')">✕</button>
-        <span class="admin-preview-badge">${activeCat}</span>
-      </div>`).join('');
+    grid.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:0.75rem;color:#555;grid-column:1/-1;padding:1rem 0;">Loading…</p>';
+
+    try {
+      const fd = new FormData();
+      fd.append('action',   'list');
+      fd.append('password', adminPwCache || ADMIN_PW);
+      fd.append('category', activeCat);
+      const res  = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
+      const data = await res.json();
+
+      if (!data.ok) { grid.innerHTML = `<p style="color:#f08080;font-family:'Inter',sans-serif;font-size:0.75rem;grid-column:1/-1;">${data.message}</p>`; return; }
+      const photos = data.photos || [];
+      if (!photos.length) {
+        grid.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:0.75rem;color:#444;grid-column:1/-1;padding:1rem 0;">No photos in this category yet.</p>';
+        return;
+      }
+      grid.innerHTML = photos.map(p => `
+        <div class="admin-preview-item">
+          <img src="${p.src}" alt="">
+          <button class="admin-preview-del" onclick="adminDeletePhoto('${p.name}','${activeCat}')">✕</button>
+          <span class="admin-preview-badge">${activeCat}</span>
+        </div>`).join('');
+    } catch(e) {
+      grid.innerHTML = '<p style="color:#f08080;font-family:\'Inter\',sans-serif;font-size:0.75rem;grid-column:1/-1;">Could not load photos — is upload.php on the server?</p>';
+    }
   }
 
-  window.adminDeletePhoto = function(id, cat) {
-    const stored = (() => { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); } catch(e) { return {}; } })();
-    if (stored[cat]) stored[cat] = stored[cat].filter(p => p.id !== id);
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(stored)); } catch(e) {}
-    // Remove from grid
-    const el = document.querySelector(`.grid-item[data-admin-id="${id}"]`);
-    if (el) el.remove();
-    renderAdminPreview();
+  // ── Delete a photo from server ──
+  window.adminDeletePhoto = async function(filename, cat) {
+    if (!confirm(`Delete "${filename}" permanently?`)) return;
+    const status = document.getElementById('admin-status');
+    status.style.color = '#c8c8c8';
+    status.textContent = 'Deleting…';
+
+    try {
+      const fd = new FormData();
+      fd.append('action',   'delete');
+      fd.append('password', adminPwCache || ADMIN_PW);
+      fd.append('category', cat);
+      fd.append('filename', filename);
+      const res  = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
+      const data = await res.json();
+
+      if (data.ok) {
+        status.style.color = '#6ee87a';
+        status.textContent = '✓ Deleted.';
+        // Remove from main gallery grid
+        const el = document.querySelector(`.grid-item[data-admin-id="${cat}_${filename}"]`);
+        if (el) el.remove();
+        renderAdminPreview();
+      } else {
+        status.style.color = '#f08080';
+        status.textContent = '✗ ' + data.message;
+      }
+    } catch(e) {
+      status.style.color = '#f08080';
+      status.textContent = '✗ Delete failed.';
+    }
+    setTimeout(() => { status.textContent = ''; }, 3000);
   };
 
   // ── Watch for hash change ──
   function checkHash() { if (location.hash === ADMIN_HASH) openAdmin(); }
   window.addEventListener('hashchange', checkHash);
-  checkHash(); // check on load
+  checkHash();
 
-  // ── Load photos on every page open ──
+  // ── Load server photos on every page open ──
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadStoredPhotos);
   else loadStoredPhotos();
 })();
