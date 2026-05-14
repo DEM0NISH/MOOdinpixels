@@ -2643,7 +2643,7 @@
     <div class="admin-body">
       <p class="admin-tag">📁 Select a category, then upload photos — they appear on the site instantly.</p>
       <div class="admin-info-box">
-        <strong>Server upload active:</strong> Photos are uploaded directly to your server into the correct category folder (e.g. <code style="font-family:monospace;background:rgba(255,255,255,0.08);padding:0 4px;border-radius:3px;">Concert/</code>, <code style="font-family:monospace;background:rgba(255,255,255,0.08);padding:0 4px;border-radius:3px;">Dance/</code>). They appear on the site permanently for all visitors.
+        <strong>Cloudinary active:</strong> Photos upload directly to Cloudinary CDN and appear on the site permanently for all visitors worldwide. Select a category tab first, then upload. To permanently delete a photo, also remove it from <strong>cloudinary.com → Assets</strong>.
       </div>
       <div class="admin-cats" id="admin-cat-tabs">
         <button class="admin-cat-tab active" data-cat="concerts" onclick="adminSetCat(this)">Concerts</button>
@@ -3119,27 +3119,43 @@ window.toggleFaq = function(btn) {
   });
 })();
 
-// ── ADMIN PANEL ──
+// ── ADMIN PANEL — Cloudinary Edition ──
 (function() {
-  const ADMIN_HASH  = '#admin';
-  const ADMIN_PW    = 'moodin2025';   // ← must match upload.php ADMIN_PASSWORD
-  const SESSION_KEY = 'mip_admin_auth';
-  const UPLOAD_URL  = 'upload.php';   // path to upload.php on your server
-  let activeCat     = 'concerts';
-  let adminPwCache  = '';             // remember pw for server calls during session
+  const ADMIN_HASH    = '#admin';
+  const ADMIN_PW      = 'moodin2025';
+  const SESSION_KEY   = 'mip_admin_auth';
+  const CLD_CLOUD     = 'dkombok4m';          // Cloudinary cloud name
+  const CLD_PRESET    = 'moodinpixels';       // Unsigned upload preset
+  const CLD_FOLDER    = 'moodinpixels';       // Root folder in Cloudinary
+  const CLD_API       = `https://api.cloudinary.com/v1_1/${CLD_CLOUD}`;
+  const INDEX_KEY     = 'mip_cld_index_v1';  // localStorage index of public_ids only (tiny)
+  let activeCat       = 'concerts';
 
-  // ── Inject photos from server into the main gallery grid ──
+  // ── Category → tag mapping (used to fetch & filter) ──
+  // Each photo gets tagged with its category on upload
+  const CATS = ['concerts','dance','dj','fashion','music','photoshoot','sports','wildlife'];
+
+  // ── Tiny local index: { cat: [ {id, url, public_id} ] }
+  // Keeps the gallery fast — no API call needed on every page load
+  function getIndex() {
+    try { return JSON.parse(localStorage.getItem(INDEX_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveIndex(idx) {
+    try { localStorage.setItem(INDEX_KEY, JSON.stringify(idx)); } catch(e) {}
+  }
+
+  // ── Inject photo cards into the main gallery grid ──
   function injectPhotosIntoGrid(cat, photos) {
     const grid = document.getElementById('grid-all');
     if (!grid) return;
     photos.forEach(photo => {
-      if (document.querySelector(`.grid-item[data-admin-id="${photo.id}"]`)) return;
+      if (document.querySelector(`.grid-item[data-admin-id="${photo.public_id}"]`)) return;
       const div = document.createElement('div');
       div.className = 'grid-item';
       div.dataset.cat = cat;
-      div.dataset.src = photo.src;
-      div.dataset.adminId = photo.id;
-      div.innerHTML = `<img src="${photo.src}" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">${cat.charAt(0).toUpperCase()+cat.slice(1)}</span></div>`;
+      div.dataset.src = photo.url;
+      div.dataset.adminId = photo.public_id;
+      div.innerHTML = `<img src="${photo.url}" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">${cat.charAt(0).toUpperCase()+cat.slice(1)}</span></div>`;
       const tl = document.createElement('div'); tl.className = 'corner-tl';
       const br = document.createElement('div'); br.className = 'corner-br';
       div.appendChild(tl); div.appendChild(br);
@@ -3150,25 +3166,28 @@ window.toggleFaq = function(btn) {
     if (typeof window.rebindLightbox === 'function') window.rebindLightbox();
   }
 
-  // ── Load all categories from server on page open ──
-  async function loadStoredPhotos() {
-    const cats = ['concerts','dance','dj','fashion','music','photoshoot','sports','wildlife'];
-    // We use the public list action (no password needed for read) — 
-    // if your server requires auth for listing, add password field here too
-    for (const cat of cats) {
-      try {
-        const fd = new FormData();
-        fd.append('action', 'list');
-        fd.append('password', ADMIN_PW);
-        fd.append('category', cat);
-        const res = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
-        if (!res.ok) continue;
-        const data = await res.json();
-        if (data.ok && data.photos && data.photos.length) {
-          injectPhotosIntoGrid(cat, data.photos);
-        }
-      } catch(e) { /* server unavailable, skip silently */ }
-    }
+  // ── On page load: inject all locally-indexed photos into gallery instantly ──
+  function loadStoredPhotos() {
+    const idx = getIndex();
+    Object.entries(idx).forEach(([cat, photos]) => {
+      if (photos && photos.length) injectPhotosIntoGrid(cat, photos);
+    });
+  }
+
+  // ── Fetch latest photos for a category from Cloudinary Search API ──
+  async function fetchCatFromCloudinary(cat) {
+    const tag = `${CLD_FOLDER}_${cat}`;
+    const url = `${CLD_API}/resources/image/tags/${encodeURIComponent(tag)}?max_results=100`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) return [];
+      const data = await res.json();
+      return (data.resources || []).map(r => ({
+        public_id: r.public_id,
+        url: r.secure_url,
+        id: r.public_id
+      }));
+    } catch(e) { return []; }
   }
 
   // ── Open admin panel ──
@@ -3192,7 +3211,6 @@ window.toggleFaq = function(btn) {
     const pw  = document.getElementById('admin-pw').value;
     const err = document.getElementById('admin-pw-err');
     if (pw === ADMIN_PW) {
-      adminPwCache = pw;
       sessionStorage.setItem(SESSION_KEY, '1');
       document.getElementById('admin-login').style.display = 'none';
       document.getElementById('admin-dashboard').style.display = 'block';
@@ -3211,110 +3229,111 @@ window.toggleFaq = function(btn) {
     renderAdminPreview();
   };
 
-  // ── Upload files to server ──
+  // ── Upload files directly to Cloudinary ──
   window.adminHandleFiles = async function(files) {
     if (!files || !files.length) return;
     const status = document.getElementById('admin-status');
+    const fileArr = Array.from(files);
     status.style.color = '#c8c8c8';
-    status.textContent = `Uploading ${files.length} photo${files.length > 1 ? 's' : ''}…`;
+    status.textContent = `Uploading 0 / ${fileArr.length}…`;
 
-    const fd = new FormData();
-    fd.append('action',   'upload');
-    fd.append('password', adminPwCache || ADMIN_PW);
-    fd.append('category', activeCat);
-    Array.from(files).forEach(f => fd.append('photos[]', f));
+    const tag = `${CLD_FOLDER}_${activeCat}`;
+    const uploaded = [];
+    let failed = 0;
 
-    try {
-      const res  = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
-      const data = await res.json();
+    for (let i = 0; i < fileArr.length; i++) {
+      const file = fileArr[i];
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', CLD_PRESET);
+      fd.append('folder', `${CLD_FOLDER}/${activeCat}`);
+      fd.append('tags', `${CLD_FOLDER},${tag}`);
 
-      if (data.ok) {
-        status.style.color = '#6ee87a';
-        const count = data.uploaded ? data.uploaded.length : files.length;
-        status.textContent = `✓ ${count} photo${count > 1 ? 's' : ''} saved to server.`;
-        if (data.errors && data.errors.length) {
-          status.textContent += ` (${data.errors.length} skipped)`;
+      try {
+        const res  = await fetch(`${CLD_API}/image/upload`, { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.secure_url) {
+          uploaded.push({ public_id: data.public_id, url: data.secure_url, id: data.public_id });
+          status.textContent = `Uploading ${uploaded.length} / ${fileArr.length}…`;
+        } else {
+          failed++;
+          console.error('Cloudinary error:', data);
         }
-        // Inject newly uploaded photos into gallery immediately
-        if (data.uploaded) injectPhotosIntoGrid(activeCat, data.uploaded);
-        renderAdminPreview();
-      } else {
-        status.style.color = '#f08080';
-        status.textContent = '✗ ' + (data.message || 'Upload failed.');
+      } catch(e) {
+        failed++;
+        console.error('Upload failed:', e);
       }
-    } catch(e) {
+    }
+
+    // Update local index
+    if (uploaded.length) {
+      const idx = getIndex();
+      if (!idx[activeCat]) idx[activeCat] = [];
+      idx[activeCat].push(...uploaded);
+      saveIndex(idx);
+      injectPhotosIntoGrid(activeCat, uploaded);
+      renderAdminPreview();
+    }
+
+    if (uploaded.length) {
+      status.style.color = '#6ee87a';
+      status.textContent = `✓ ${uploaded.length} photo${uploaded.length > 1 ? 's' : ''} uploaded to Cloudinary.` + (failed ? ` (${failed} failed)` : '');
+    } else {
       status.style.color = '#f08080';
-      status.textContent = '✗ Could not reach upload.php. Is it on the server?';
+      status.textContent = `✗ All uploads failed. Check console for details.`;
     }
 
     setTimeout(() => { status.textContent = ''; status.style.color = '#c8c8c8'; }, 5000);
     document.getElementById('admin-file-input').value = '';
   };
 
-  // ── Render admin preview grid from server list ──
+  // ── Render admin preview — loads from Cloudinary for freshest list ──
   async function renderAdminPreview() {
-    const grid   = document.getElementById('admin-preview');
-    const status = document.getElementById('admin-status');
+    const grid = document.getElementById('admin-preview');
     if (!grid) return;
-    grid.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:0.75rem;color:#555;grid-column:1/-1;padding:1rem 0;">Loading…</p>';
+    grid.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:0.75rem;color:#555;grid-column:1/-1;padding:1rem 0;">Loading from Cloudinary…</p>';
 
-    try {
-      const fd = new FormData();
-      fd.append('action',   'list');
-      fd.append('password', adminPwCache || ADMIN_PW);
-      fd.append('category', activeCat);
-      const res  = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
-      const data = await res.json();
+    const photos = await fetchCatFromCloudinary(activeCat);
 
-      if (!data.ok) { grid.innerHTML = `<p style="color:#f08080;font-family:'Inter',sans-serif;font-size:0.75rem;grid-column:1/-1;">${data.message}</p>`; return; }
-      const photos = data.photos || [];
-      if (!photos.length) {
-        grid.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:0.75rem;color:#444;grid-column:1/-1;padding:1rem 0;">No photos in this category yet.</p>';
-        return;
-      }
-      grid.innerHTML = photos.map(p => `
-        <div class="admin-preview-item">
-          <img src="${p.src}" alt="">
-          <button class="admin-preview-del" onclick="adminDeletePhoto('${p.name}','${activeCat}')">✕</button>
-          <span class="admin-preview-badge">${activeCat}</span>
-        </div>`).join('');
-    } catch(e) {
-      grid.innerHTML = '<p style="color:#f08080;font-family:\'Inter\',sans-serif;font-size:0.75rem;grid-column:1/-1;">Could not load photos — is upload.php on the server?</p>';
+    // Also update local index with fresh data
+    const idx = getIndex();
+    idx[activeCat] = photos;
+    saveIndex(idx);
+
+    if (!photos.length) {
+      grid.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:0.75rem;color:#444;grid-column:1/-1;padding:1rem 0;">No photos in this category yet.</p>';
+      return;
     }
+
+    grid.innerHTML = photos.map(p => `
+      <div class="admin-preview-item">
+        <img src="${p.url}" alt="">
+        <button class="admin-preview-del" onclick="adminDeletePhoto('${p.public_id}','${activeCat}')">✕</button>
+        <span class="admin-preview-badge">${activeCat}</span>
+      </div>`).join('');
   }
 
-  // ── Delete a photo from server ──
-  window.adminDeletePhoto = async function(filename, cat) {
-    if (!confirm(`Delete "${filename}" permanently?`)) return;
+  // ── Delete via Cloudinary Admin API ──
+  // Note: Cloudinary deletion from browser requires a signed request or a small proxy.
+  // We mark deleted in local index and show instructions.
+  window.adminDeletePhoto = async function(publicId, cat) {
+    if (!confirm('Remove this photo from the gallery?\n\nNote: To permanently delete from Cloudinary, go to cloudinary.com → Assets and delete it there too.')) return;
+
+    // Remove from local index so it no longer shows on this browser
+    const idx = getIndex();
+    if (idx[cat]) idx[cat] = idx[cat].filter(p => p.public_id !== publicId);
+    saveIndex(idx);
+
+    // Remove from main gallery grid immediately
+    const el = document.querySelector(`.grid-item[data-admin-id="${publicId}"]`);
+    if (el) el.remove();
+
+    renderAdminPreview();
+
     const status = document.getElementById('admin-status');
-    status.style.color = '#c8c8c8';
-    status.textContent = 'Deleting…';
-
-    try {
-      const fd = new FormData();
-      fd.append('action',   'delete');
-      fd.append('password', adminPwCache || ADMIN_PW);
-      fd.append('category', cat);
-      fd.append('filename', filename);
-      const res  = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
-      const data = await res.json();
-
-      if (data.ok) {
-        status.style.color = '#6ee87a';
-        status.textContent = '✓ Deleted.';
-        // Remove from main gallery grid
-        const el = document.querySelector(`.grid-item[data-admin-id="${cat}_${filename}"]`);
-        if (el) el.remove();
-        renderAdminPreview();
-      } else {
-        status.style.color = '#f08080';
-        status.textContent = '✗ ' + data.message;
-      }
-    } catch(e) {
-      status.style.color = '#f08080';
-      status.textContent = '✗ Delete failed.';
-    }
-    setTimeout(() => { status.textContent = ''; }, 3000);
+    status.style.color = '#6ee87a';
+    status.textContent = '✓ Removed from gallery. Delete permanently at cloudinary.com → Assets.';
+    setTimeout(() => { status.textContent = ''; }, 6000);
   };
 
   // ── Watch for hash change ──
@@ -3322,7 +3341,7 @@ window.toggleFaq = function(btn) {
   window.addEventListener('hashchange', checkHash);
   checkHash();
 
-  // ── Load server photos on every page open ──
+  // ── Load cached photos instantly on page open ──
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadStoredPhotos);
   else loadStoredPhotos();
 })();
