@@ -102,6 +102,20 @@
 ]
 </script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"How far in advance should I book Simarpreet Singh?","acceptedAnswer":{"@type":"Answer","text":"For planned events like concerts and fashion shoots, 1–2 weeks in advance is ideal. For last-minute bookings, reach out on WhatsApp (+91-96901-51550) and availability can often be confirmed for same-week shoots."}},
+    {"@type":"Question","name":"Does Simarpreet travel outside Jaipur?","acceptedAnswer":{"@type":"Answer","text":"Yes. He shoots across Rajasthan and travels PAN India for the right projects. Travel and accommodation costs are added to the package for outstation shoots."}},
+    {"@type":"Question","name":"How long does photo delivery take?","acceptedAnswer":{"@type":"Answer","text":"Edited photos are typically delivered within 3–5 working days via Google Drive. Same-day or next-day delivery is available at an additional charge for urgent requirements."}},
+    {"@type":"Question","name":"What are the pricing packages?","acceptedAnswer":{"@type":"Answer","text":"Event shoots start from ₹4,999 (up to 3 hours, 50+ edited photos). Performance shoots start from ₹6,999 (up to 4 hours, 80+ edited photos). Fashion shoots start from ₹5,999 (up to 3 hours, 40+ edited photos). Custom packages available on request."}},
+    {"@type":"Question","name":"What payment methods are accepted?","acceptedAnswer":{"@type":"Answer","text":"UPI, bank transfer, and cash are accepted. A 50% advance confirms the booking and the remaining 50% is due on or before the shoot date."}}
+  ]
+}
+</script>
+
 <!-- ── PERFORMANCE ── -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -167,6 +181,294 @@
     white-space: nowrap;
     overflow: hidden;
   }
+
+  /* ── FLOATING WHATSAPP BUTTON ── */
+  #wa-float {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 9000;
+    display: flex; align-items: center; gap: 0.7rem;
+    background: #25D366; color: #fff;
+    padding: 0.75rem 1.4rem 0.75rem 1rem;
+    border-radius: 50px;
+    box-shadow: 0 4px 24px rgba(37,211,102,0.35);
+    text-decoration: none; cursor: pointer;
+    font-family: 'Syne', sans-serif; font-size: 0.72rem;
+    letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: waPulse 2.5s ease infinite;
+  }
+  #wa-float:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 8px 32px rgba(37,211,102,0.5); }
+  #wa-float svg { width: 20px; height: 20px; flex-shrink: 0; }
+  @keyframes waPulse {
+    0%,100% { box-shadow: 0 4px 24px rgba(37,211,102,0.35); }
+    50%      { box-shadow: 0 4px 32px rgba(37,211,102,0.6), 0 0 0 8px rgba(37,211,102,0.08); }
+  }
+  #wa-float .wa-label { white-space: nowrap; }
+  @media (max-width: 600px) { #wa-float .wa-label { display: none; } #wa-float { padding: 0.85rem; border-radius: 50%; } }
+
+  /* ── STICKY BOOKING BAR (appears after scroll) ── */
+  #sticky-book {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 8500;
+    background: rgba(8,8,8,0.92);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(200,200,200,0.1);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.9rem 3rem;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+    pointer-events: none;
+  }
+  #sticky-book.visible { transform: translateY(0); pointer-events: all; }
+  .sticky-book-text { font-family: 'Inter', sans-serif; font-size: 0.82rem; color: var(--muted); }
+  .sticky-book-text strong { color: var(--text); }
+  .sticky-book-actions { display: flex; gap: 0.8rem; align-items: center; }
+  .sticky-book-wa {
+    background: #25D366; color: #fff; padding: 0.6rem 1.4rem;
+    font-family: 'Syne', sans-serif; font-size: 0.7rem;
+    letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700;
+    text-decoration: none; transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .sticky-book-wa:hover { background: #1eb855; }
+  .sticky-book-cta {
+    background: var(--accent); color: var(--bg);
+    padding: 0.6rem 1.4rem;
+    font-family: 'Syne', sans-serif; font-size: 0.7rem;
+    letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700;
+    text-decoration: none; transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .sticky-book-cta:hover { background: var(--accent2); }
+  @media (max-width: 700px) { #sticky-book { padding: 0.8rem 1rem; } .sticky-book-text { display: none; } }
+
+  /* ── SOCIAL PROOF LIVE BADGE ── */
+  #live-badge {
+    position: fixed; top: 5.5rem; right: 1.5rem; z-index: 8000;
+    background: rgba(8,8,8,0.88);
+    border: 1px solid rgba(200,200,200,0.12);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    padding: 0.55rem 1rem;
+    font-family: 'Inter', sans-serif; font-size: 0.68rem;
+    color: var(--muted); display: flex; align-items: center; gap: 0.5rem;
+    transform: translateX(110%);
+    transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    max-width: 220px;
+  }
+  #live-badge.show { transform: translateX(0); }
+  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #6ee87a; flex-shrink: 0; animation: liveDot 1.5s ease infinite; }
+  @keyframes liveDot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ── PRICING SECTION ── */
+  .pricing-section {
+    padding: 6rem 3rem;
+    background: var(--bg);
+    border-top: 1px solid var(--glass-border);
+  }
+  .pricing-section .section-header { padding: 0 0 3rem; border-bottom: none; }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px; background: var(--glass-border);
+  }
+  .pricing-card {
+    background: var(--bg2);
+    padding: 2.5rem 2rem;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; gap: 1.5rem;
+    transition: background 0.3s;
+  }
+  .pricing-card:hover { background: var(--bg3); }
+  .pricing-card.featured {
+    background: rgba(200,200,200,0.06);
+    border: 1px solid rgba(200,200,200,0.18);
+    margin: -1px;
+    z-index: 1;
+  }
+  .pricing-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute; top: 1rem; right: 1rem;
+    font-family: 'Syne', sans-serif; font-size: 0.55rem;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--bg); background: var(--accent);
+    padding: 0.2rem 0.7rem;
+  }
+  .pricing-cat {
+    font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: -1rem;
+  }
+  .pricing-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; letter-spacing: 0.05em;
+    color: var(--text); line-height: 1;
+  }
+  .pricing-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem; color: var(--text); line-height: 1;
+  }
+  .pricing-price span { font-size: 1rem; color: var(--muted); letter-spacing: 0.1em; }
+  .pricing-note { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: var(--muted); }
+  .pricing-features {
+    list-style: none; display: flex; flex-direction: column; gap: 0.6rem; flex: 1;
+  }
+  .pricing-features li {
+    font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--muted);
+    display: flex; gap: 0.6rem; align-items: flex-start; line-height: 1.5;
+  }
+  .pricing-features li::before { content: '✦'; color: var(--accent); font-size: 0.6rem; margin-top: 0.25rem; flex-shrink: 0; }
+  .pricing-cta {
+    display: block; text-align: center;
+    border: 1px solid var(--border);
+    padding: 0.75rem;
+    font-family: 'Syne', sans-serif; font-size: 0.7rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text); text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+    margin-top: auto;
+  }
+  .pricing-cta:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .pricing-card.featured .pricing-cta { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .pricing-card.featured .pricing-cta:hover { background: var(--accent2); }
+  .pricing-custom {
+    grid-column: 1 / -1;
+    background: rgba(200,200,200,0.03);
+    padding: 2rem 2.5rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .pricing-custom-text { font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+  .pricing-custom-text strong { color: var(--text); }
+  @media (max-width: 900px) { .pricing-section { padding: 4rem 1.5rem; } .pricing-card { padding: 2rem 1.5rem; } }
+
+  /* ── FAQ SECTION ── */
+  .faq-section {
+    padding: 6rem 3rem;
+    background: var(--bg2);
+    border-top: 1px solid var(--glass-border);
+  }
+  .faq-section .section-header { padding: 0 0 3rem; border-bottom: none; }
+  .faq-list { max-width: 780px; display: flex; flex-direction: column; gap: 1px; background: var(--glass-border); }
+  .faq-item {
+    background: var(--bg2);
+    overflow: hidden;
+  }
+  .faq-q {
+    width: 100%; text-align: left; background: none; border: none;
+    padding: 1.5rem 2rem;
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    font-family: 'Syne', sans-serif; font-size: 0.9rem; letter-spacing: 0.05em;
+    color: var(--text); cursor: pointer;
+    transition: color 0.2s;
+  }
+  .faq-q:hover { color: var(--accent); }
+  .faq-q-icon {
+    font-size: 1.2rem; color: var(--accent); flex-shrink: 0;
+    transition: transform 0.3s;
+  }
+  .faq-item.open .faq-q-icon { transform: rotate(45deg); }
+  .faq-a {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .faq-item.open .faq-a { max-height: 300px; }
+  .faq-a-inner {
+    padding: 0 2rem 1.5rem;
+    font-family: 'Inter', sans-serif; font-size: 0.85rem;
+    color: var(--muted); line-height: 1.8;
+  }
+  .faq-a-inner a { color: var(--accent); text-decoration: none; }
+  @media (max-width: 900px) { .faq-section { padding: 4rem 1.5rem; } .faq-list { max-width: 100%; } .faq-q { padding: 1.2rem 1.2rem; font-size: 0.82rem; } .faq-a-inner { padding: 0 1.2rem 1.2rem; } }
+
+  /* ── INSTAGRAM FEED STRIP ── */
+  .ig-section {
+    padding: 5rem 0;
+    background: var(--bg);
+    border-top: 1px solid var(--glass-border);
+    overflow: hidden;
+  }
+  .ig-section .section-header { padding: 0 3rem 2.5rem; border-bottom: none; }
+  .ig-strip {
+    display: flex; gap: 3px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    scrollbar-width: none; padding: 0 3px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ig-strip::-webkit-scrollbar { display: none; }
+  .ig-tile {
+    flex: 0 0 clamp(160px, 18vw, 240px);
+    aspect-ratio: 1;
+    position: relative; overflow: hidden;
+    background: var(--bg2);
+    scroll-snap-align: start;
+  }
+  .ig-tile img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); transition: filter 0.4s, transform 0.5s; }
+  .ig-tile:hover img { filter: brightness(1); transform: scale(1.06); }
+  .ig-tile-overlay {
+    position: absolute; inset: 0;
+    background: rgba(8,8,8,0.55); opacity: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.3s;
+  }
+  .ig-tile:hover .ig-tile-overlay { opacity: 1; }
+  .ig-tile-overlay svg { width: 28px; height: 28px; fill: #fff; }
+  .ig-follow-cta {
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 2.5rem; padding: 0 3rem;
+  }
+  .ig-follow-btn {
+    display: flex; align-items: center; gap: 0.8rem;
+    border: 1px solid var(--border);
+    padding: 0.9rem 2.2rem;
+    font-family: 'Syne', sans-serif; font-size: 0.75rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text); text-decoration: none;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .ig-follow-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .ig-follow-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+  /* ── PROCESS / HOW IT WORKS ── */
+  .process-section {
+    padding: 6rem 3rem;
+    background: var(--bg3);
+    border-top: 1px solid var(--glass-border);
+  }
+  .process-section .section-header { padding: 0 0 4rem; border-bottom: none; }
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--glass-border);
+  }
+  .process-step {
+    background: var(--bg3);
+    padding: 2.5rem 2rem;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .process-step:hover { background: var(--bg2); }
+  .process-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem; color: rgba(200,200,200,0.06);
+    line-height: 1; margin-bottom: 1rem;
+    transition: color 0.3s;
+  }
+  .process-step:hover .process-num { color: rgba(200,200,200,0.12); }
+  .process-icon { font-size: 1.6rem; margin-bottom: 0.8rem; }
+  .process-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem; letter-spacing: 0.05em;
+    color: var(--text); margin-bottom: 0.6rem;
+  }
+  .process-desc {
+    font-family: 'Inter', sans-serif; font-size: 0.8rem;
+    color: var(--muted); line-height: 1.7;
+  }
+  .process-connector {
+    position: absolute; top: 2.5rem; right: -0.5px;
+    width: 1px; height: 2.5rem;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+  .process-step:last-child .process-connector { display: none; }
+  @media (max-width: 900px) { .process-steps { grid-template-columns: 1fr 1fr; } .process-section { padding: 4rem 1.5rem; } }
+  @media (max-width: 600px) { .process-steps { grid-template-columns: 1fr; } }
 
   /* ── ZOOM CURSOR on all photo zones ── */
   .grid-item,
@@ -1696,7 +1998,8 @@
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#portfolio">Work</a></li>
-    <li><a href="#ratings">Ratings</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <div class="avail-badge" id="nav-avail">
@@ -1717,7 +2020,8 @@
 <div id="mobile-menu">
   <a href="#about"     onclick="closeMobileMenu()">About</a>
   <a href="#portfolio" onclick="closeMobileMenu()">Work</a>
-  <a href="#ratings"   onclick="closeMobileMenu()">Ratings</a>
+  <a href="#pricing"   onclick="closeMobileMenu()">Pricing</a>
+  <a href="#faq"       onclick="closeMobileMenu()">FAQ</a>
   <a href="#contact"   onclick="closeMobileMenu()">Contact</a>
   <a href="#contact"   onclick="closeMobileMenu()" class="mobile-book">Book Now</a>
 </div>
@@ -2003,6 +2307,167 @@
   </div>
 </section>
 
+<!-- HOW IT WORKS -->
+<section class="process-section reveal">
+  <div class="section-header">
+    <div>
+      <p class="section-tag">03 / Process</p>
+      <h2 class="section-title">How it <em>works</em></h2>
+    </div>
+    <span class="section-count">Simple. Fast. Professional.</span>
+  </div>
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="process-num">01</div>
+      <div class="process-icon">💬</div>
+      <div class="process-title">Reach Out</div>
+      <div class="process-desc">Drop a message on WhatsApp, Instagram or email with your event date, location and what you need captured.</div>
+      <div class="process-connector"></div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">02</div>
+      <div class="process-icon">🗓️</div>
+      <div class="process-title">We Plan</div>
+      <div class="process-desc">We discuss the shoot — style, shots list, timing. I scout the location if needed and arrive fully prepared.</div>
+      <div class="process-connector"></div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">03</div>
+      <div class="process-icon">📸</div>
+      <div class="process-title">Shoot Day</div>
+      <div class="process-desc">I blend into the environment and capture authentic moments. No stiff poses — just raw, real energy.</div>
+      <div class="process-connector"></div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">04</div>
+      <div class="process-icon">✨</div>
+      <div class="process-title">Delivery</div>
+      <div class="process-desc">Edited, high-resolution photos delivered via Google Drive within 3–5 days. Events same week. No watermarks.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section reveal" id="pricing">
+  <div class="section-header">
+    <div>
+      <p class="section-tag">04 / Pricing</p>
+      <h2 class="section-title">Transparent <em>rates</em></h2>
+    </div>
+    <span class="section-count">Starting packages</span>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <p class="pricing-cat">Events &amp; Concerts</p>
+      <div class="pricing-name">Event Shoot</div>
+      <div class="pricing-price">₹4,999 <span>/ session</span></div>
+      <div class="pricing-note">Up to 3 hours · 50+ edited photos</div>
+      <ul class="pricing-features">
+        <li>Concert, DJ night or live event</li>
+        <li>50+ high-res edited photos</li>
+        <li>Delivered in 5 working days</li>
+        <li>Google Drive delivery</li>
+      </ul>
+      <a href="https://wa.me/919690151550?text=Hi!%20I%27m%20interested%20in%20the%20Event%20Shoot%20package." class="pricing-cta" target="_blank" rel="noopener">Book This →</a>
+    </div>
+    <div class="pricing-card featured">
+      <p class="pricing-cat">Dance &amp; Performance</p>
+      <div class="pricing-name">Performance Shoot</div>
+      <div class="pricing-price">₹6,999 <span>/ session</span></div>
+      <div class="pricing-note">Up to 4 hours · 80+ edited photos</div>
+      <ul class="pricing-features">
+        <li>Dance shows, sports events, acts</li>
+        <li>80+ high-res edited photos</li>
+        <li>Delivered in 4 working days</li>
+        <li>Google Drive + print-ready files</li>
+        <li>1 free revision round</li>
+      </ul>
+      <a href="https://wa.me/919690151550?text=Hi!%20I%27m%20interested%20in%20the%20Performance%20Shoot%20package." class="pricing-cta" target="_blank" rel="noopener">Book This →</a>
+    </div>
+    <div class="pricing-card">
+      <p class="pricing-cat">Fashion &amp; Portraits</p>
+      <div class="pricing-name">Fashion Shoot</div>
+      <div class="pricing-price">₹5,999 <span>/ session</span></div>
+      <div class="pricing-note">Up to 3 hours · 40+ edited photos</div>
+      <ul class="pricing-features">
+        <li>Fashion, portraits, brand content</li>
+        <li>40+ high-res edited photos</li>
+        <li>Location scouting included</li>
+        <li>Delivered in 4 working days</li>
+      </ul>
+      <a href="https://wa.me/919690151550?text=Hi!%20I%27m%20interested%20in%20the%20Fashion%20Shoot%20package." class="pricing-cta" target="_blank" rel="noopener">Book This →</a>
+    </div>
+    <div class="pricing-custom">
+      <div class="pricing-custom-text">Need something different? <strong>Multi-day shoots, wildlife expeditions, sports tournaments</strong> or full event coverage are priced based on requirements. Let's talk.</div>
+      <a href="https://wa.me/919690151550?text=Hi!%20I%20have%20a%20custom%20shoot%20requirement." class="pricing-cta" target="_blank" rel="noopener" style="white-space:nowrap;">Get Custom Quote →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section reveal" id="faq">
+  <div class="section-header">
+    <div>
+      <p class="section-tag">05 / FAQ</p>
+      <h2 class="section-title">Common <em>questions</em></h2>
+    </div>
+  </div>
+  <div class="faq-list" id="faqList">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">How far in advance should I book? <span class="faq-q-icon">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">For planned events like concerts and fashion shoots, 1–2 weeks in advance is ideal. For last-minute bookings, reach out on <a href="https://wa.me/919690151550" target="_blank">WhatsApp</a> and I'll do my best to fit you in — I often have availability for same-week shoots.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Do you travel outside Jaipur? <span class="faq-q-icon">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Yes! I shoot across Rajasthan and travel PAN India for the right projects. Travel and accommodation costs are added to the package for outstation shoots. Contact me to discuss.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">How long does delivery take? <span class="faq-q-icon">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Edited photos are typically delivered within 3–5 working days via Google Drive. For urgent requirements (event press releases etc.), same-day or next-day delivery is available at an additional charge.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">What equipment do you use? <span class="faq-q-icon">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">I shoot on professional Nikon DSLRs with a range of fast prime and zoom lenses suited to low-light concert and event environments. All gear is professional grade — no compromise on image quality.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Can I use the photos for social media and commercial use? <span class="faq-q-icon">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Yes — personal and social media use is included in all packages. For commercial licensing (advertising campaigns, brand usage etc.), please mention it when booking so we can discuss the right terms.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">What payment methods do you accept? <span class="faq-q-icon">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">I accept UPI, bank transfer, and cash. A 50% advance confirms your booking. The remaining 50% is due on or before the shoot date.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM FEED -->
+<section class="ig-section reveal">
+  <div class="section-header">
+    <div>
+      <p class="section-tag">06 / Instagram</p>
+      <h2 class="section-title">Follow the <em>lens</em></h2>
+    </div>
+    <span class="section-count">@moodinpixels__</span>
+  </div>
+  <div class="ig-strip" id="igStrip">
+    <!-- Pulls from portfolio images as stand-ins until real IG feed is connected -->
+    <a class="ig-tile" href="https://instagram.com/moodinpixels__" target="_blank" rel="noopener"><img src="Concert/Simar(1).jpg" alt="Concert" loading="lazy"><div class="ig-tile-overlay"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div></a>
+    <a class="ig-tile" href="https://instagram.com/moodinpixels__" target="_blank" rel="noopener"><img src="Dance/DSC_5197.jpg" alt="Dance" loading="lazy"><div class="ig-tile-overlay"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div></a>
+    <a class="ig-tile" href="https://instagram.com/moodinpixels__" target="_blank" rel="noopener"><img src="Fashion/DSC_3512.jpg" alt="Fashion" loading="lazy"><div class="ig-tile-overlay"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div></a>
+    <a class="ig-tile" href="https://instagram.com/moodinpixels__" target="_blank" rel="noopener"><img src="Music/NU_09831.jpg" alt="Music" loading="lazy"><div class="ig-tile-overlay"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div></a>
+    <a class="ig-tile" href="https://instagram.com/moodinpixels__" target="_blank" rel="noopener"><img src="Sports/DSC_0959.jpg" alt="Sports" loading="lazy"><div class="ig-tile-overlay"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div></a>
+    <a class="ig-tile" href="https://instagram.com/moodinpixels__" target="_blank" rel="noopener"><img src="Wildlife/IMG_9323.jpg" alt="Wildlife" loading="lazy"><div class="ig-tile-overlay"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div></a>
+    <a class="ig-tile" href="https://instagram.com/moodinpixels__" target="_blank" rel="noopener"><img src="Photoshoot/IMG_9004.jpg" alt="Photoshoot" loading="lazy"><div class="ig-tile-overlay"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div></a>
+    <a class="ig-tile" href="https://instagram.com/moodinpixels__" target="_blank" rel="noopener"><img src="DJ/IMG_5126.jpeg" alt="DJ" loading="lazy"><div class="ig-tile-overlay"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div></a>
+  </div>
+  <div class="ig-follow-cta">
+    <a class="ig-follow-btn" href="https://instagram.com/moodinpixels__" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      Follow @moodinpixels__
+    </a>
+  </div>
+</section>
+
 <!-- RATING SECTION -->
 <section id="ratings" class="rating-section">
   <div class="section-header reveal">
@@ -2168,9 +2633,38 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">Mood<span>in</span>Pixels</div>
-  <span class="footer-copy">© 2025 Simarpreet Singh · All rights reserved</span>
-  <span class="footer-copy">Jaipur, Rajasthan</span>
+  <div style="display:flex;gap:2rem;align-items:center;flex-wrap:wrap;justify-content:center;">
+    <a href="#about" style="font-family:'Syne',sans-serif;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;">About</a>
+    <a href="#portfolio" style="font-family:'Syne',sans-serif;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;">Work</a>
+    <a href="#pricing" style="font-family:'Syne',sans-serif;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;">Pricing</a>
+    <a href="#faq" style="font-family:'Syne',sans-serif;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;">FAQ</a>
+    <a href="#contact" style="font-family:'Syne',sans-serif;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;">Contact</a>
+    <a href="https://instagram.com/moodinpixels__" target="_blank" rel="noopener" style="font-family:'Syne',sans-serif;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;">Instagram</a>
+    <a href="https://wa.me/919690151550" target="_blank" rel="noopener" style="font-family:'Syne',sans-serif;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;">WhatsApp</a>
+  </div>
+  <span class="footer-copy">© 2025 Simarpreet Singh · All rights reserved · Jaipur, Rajasthan</span>
 </footer>
+
+<!-- FLOATING WHATSAPP -->
+<a id="wa-float" href="https://wa.me/919690151550?text=Hi%20Simarpreet!%20I%20found%20your%20portfolio%20and%20I%27d%20like%20to%20book%20a%20session." target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  <span class="wa-label">Book on WhatsApp</span>
+</a>
+
+<!-- STICKY BOOKING BAR -->
+<div id="sticky-book">
+  <div class="sticky-book-text"><strong>Simarpreet Singh</strong> — Available for bookings in Jaipur &amp; beyond</div>
+  <div class="sticky-book-actions">
+    <a class="sticky-book-wa" href="https://wa.me/919690151550?text=Hi%20Simarpreet!%20I%27d%20like%20to%20book%20a%20session." target="_blank" rel="noopener">WhatsApp</a>
+    <a class="sticky-book-cta" href="#contact">Book Now →</a>
+  </div>
+</div>
+
+<!-- LIVE SOCIAL PROOF BADGE -->
+<div id="live-badge">
+  <span class="live-dot"></span>
+  <span id="live-badge-text">Someone just viewed the portfolio</span>
+</div>
 
 <!-- RIGHT-CLICK TOAST -->
 <div id="no-rightclick-toast">© MoodinPixels — All Rights Reserved</div>
@@ -2611,6 +3105,50 @@
   let lastY = window.scrollY;
   window.addEventListener('scroll', () => { const dy = window.scrollY - lastY; title.style.transform = `skewX(${Math.max(-4, Math.min(4, dy * 0.15))}deg)`; lastY = window.scrollY; }, { passive: true });
 })();
+
+// ── STICKY BOOKING BAR ──
+(function() {
+  const bar = document.getElementById('sticky-book');
+  if (!bar) return;
+  let shown = false;
+  window.addEventListener('scroll', () => {
+    const show = window.scrollY > 500;
+    if (show !== shown) { shown = show; bar.classList.toggle('visible', show); }
+  }, { passive: true });
+})();
+
+// ── LIVE SOCIAL PROOF BADGE ──
+(function() {
+  const badge = document.getElementById('live-badge');
+  const textEl = document.getElementById('live-badge-text');
+  if (!badge || !textEl) return;
+  const messages = [
+    'Someone in Jaipur viewed the portfolio',
+    'A visitor is exploring Concert shots',
+    '3 people viewed this site today',
+    'Someone just checked the pricing',
+    'A visitor from Rajasthan is browsing',
+    'Someone is exploring Dance photography',
+    '5 visitors this hour',
+    'Someone just sent a booking enquiry',
+  ];
+  let idx = Math.floor(Math.random() * messages.length);
+  function showBadge() {
+    textEl.textContent = messages[idx % messages.length];
+    idx++;
+    badge.classList.add('show');
+    setTimeout(() => badge.classList.remove('show'), 4500);
+  }
+  setTimeout(() => { showBadge(); setInterval(showBadge, 18000); }, 6000);
+})();
+
+// ── FAQ TOGGLE ──
+window.toggleFaq = function(btn) {
+  const item = btn.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+};
 
 // ── DISABLE RIGHT-CLICK ──
 (function() {
