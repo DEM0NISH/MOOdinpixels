@@ -1066,6 +1066,28 @@
     color: var(--accent); border-bottom-color: var(--accent);
   }
 
+  /* ── NEW: Brand Shoot tab highlight ── */
+  .filter-btn.is-new {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text);
+  }
+  .filter-btn.is-new .new-pill {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.55rem; font-weight: 400;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: #080808; background: #f2c14e;
+    padding: 0.22rem 0.55rem; border-radius: 20px;
+    line-height: 1; white-space: nowrap;
+    animation: filterNewPulse 2.4s ease infinite;
+  }
+  @keyframes filterNewPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(242,193,78,0.55); }
+    60%  { box-shadow: 0 0 0 6px rgba(242,193,78,0); }
+    100% { box-shadow: 0 0 0 0 rgba(242,193,78,0); }
+  }
+
   /* MASONRY GRID */
   .portfolio-grid {
     columns: 3; column-gap: 3px;
@@ -1139,6 +1161,7 @@
   .cat-card:nth-child(6) { transition-delay: 0.40s; }
   .cat-card:nth-child(7) { transition-delay: 0.47s; }
   .cat-card:nth-child(8) { transition-delay: 0.54s; }
+  .cat-card:nth-child(9) { transition-delay: 0.61s; }
   .cat-card img {
     width: 100%; height: 100%; object-fit: cover;
     filter: brightness(0.45) grayscale(40%);
@@ -1203,6 +1226,29 @@
   :root.light .cat-card-content { background: linear-gradient(to top, rgba(240,240,240,0.90) 0%, transparent 55%); }
   :root.light .cat-card-num { color: rgba(0,0,0,0.07); }
   :root.light .cat-card img { filter: brightness(0.55) grayscale(40%); }
+
+  /* ── NEW: Brand Shoot category card highlight ── */
+  .cat-card.is-new {
+    box-shadow: inset 0 0 0 2px rgba(242,193,78,0.55);
+  }
+  .cat-card.is-new:hover {
+    box-shadow: inset 0 0 0 2px rgba(242,193,78,0.65), 0 24px 48px rgba(0,0,0,0.5);
+  }
+  .cat-new-tag {
+    position: absolute; top: 0.7rem; left: 0.7rem; z-index: 5;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.58rem; font-weight: 400;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: #080808; background: #f2c14e;
+    padding: 0.3rem 0.65rem; border-radius: 20px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35), 0 0 0 0 rgba(242,193,78,0.55);
+    animation: catNewTagPulse 2.4s ease infinite;
+  }
+  @keyframes catNewTagPulse {
+    0%   { box-shadow: 0 4px 14px rgba(0,0,0,0.35), 0 0 0 0 rgba(242,193,78,0.55); }
+    60%  { box-shadow: 0 4px 14px rgba(0,0,0,0.35), 0 0 0 8px rgba(242,193,78,0); }
+    100% { box-shadow: 0 4px 14px rgba(0,0,0,0.35), 0 0 0 0 rgba(242,193,78,0); }
+  }
 
   /* drag hint */
   .cat-drag-hint {
@@ -2090,9 +2136,9 @@
 
 <!-- STATS -->
 <div class="stats-bar reveal">
-  <div class="stat"><div class="stat-num" data-count="8">0</div><div class="stat-label">Photography Genres</div></div>
+  <div class="stat"><div class="stat-num" data-count="9">0</div><div class="stat-label">Photography Genres</div></div>
   <div class="stat"><div class="stat-num" data-count="50">0</div><div class="stat-label">Events Captured</div></div>
-  <div class="stat"><div class="stat-num" data-count="60">0</div><div class="stat-label">Shots in Portfolio</div></div>
+  <div class="stat"><div class="stat-num" data-count="78">0</div><div class="stat-label">Shots in Portfolio</div></div>
   <div class="stat"><div class="stat-num" data-count="3">0</div><div class="stat-label">Years of Experience</div></div>
 </div>
 
@@ -2166,6 +2212,7 @@
   <div id="filter-label"><span class="tl-text">Showing all photos</span><span class="tl-cursor"></span></div>
   <div class="filter-bar">
     <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn is-new" data-filter="brand">Brand Shoot <span class="new-pill">New</span></button>
     <button class="filter-btn" data-filter="concerts">Concerts</button>
     <button class="filter-btn" data-filter="fashion">Fashion</button>
     <button class="filter-btn" data-filter="dance">Dance</button>
@@ -2256,6 +2303,13 @@
     <div class="grid-item" data-cat="wildlife" data-src="Wildlife/IMG_9343.jpg"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy="Wildlife/IMG_9343.jpg" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">Wildlife</span></div></div>
     <div class="grid-item" data-cat="wildlife" data-src="Wildlife/simar4.jpg"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy="Wildlife/simar4.jpg" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">Wildlife</span></div></div>
     <div class="grid-item" data-cat="wildlife" data-src="Wildlife/simar6.jpg"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy="Wildlife/simar6.jpg" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">Wildlife</span></div></div>
+    <!-- Brand Shoot: 6 -->
+    <div class="grid-item" data-cat="brand" data-src="Indivaa/Attar.png"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy="Indivaa/Attar.png" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">Brand Shoot</span></div></div>
+    <div class="grid-item" data-cat="brand" data-src="Indivaa/Wax sachets.png"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy="Indivaa/Wax sachets.png" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">Brand Shoot</span></div></div>
+    <div class="grid-item" data-cat="brand" data-src="Indivaa/candle 2.png"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy="Indivaa/candle 2.png" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">Brand Shoot</span></div></div>
+    <div class="grid-item" data-cat="brand" data-src="Indivaa/coffee candle.png"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy="Indivaa/coffee candle.png" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">Brand Shoot</span></div></div>
+    <div class="grid-item" data-cat="brand" data-src="Indivaa/premium bottle Single.png"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy="Indivaa/premium bottle Single.png" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">Brand Shoot</span></div></div>
+    <div class="grid-item" data-cat="brand" data-src="Indivaa/premium bottle double.png"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy="Indivaa/premium bottle double.png" decoding="async" alt=""><div class="grid-item-overlay"><span class="grid-cat">Brand Shoot</span></div></div>
   </div>
 </section>
 
@@ -2272,37 +2326,42 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
   </div>
   <div class="cat-showcase" id="catShowcase">
+    <a class="cat-card is-new" href="#portfolio" data-filter="brand">
+      <span class="cat-new-tag">New</span>
+      <img src="Indivaa/candle 2.png" loading="eager" decoding="async" alt="Brand Shoot Photography">
+      <div class="cat-card-content"><div class="cat-card-num">01</div><div class="cat-card-title">Brand<br>Shoot</div><div class="cat-card-sub">Product &amp; Brand</div></div>
+    </a>
     <a class="cat-card" href="#portfolio" data-filter="concerts">
       <img src="Concert/Simar(1).jpg" loading="eager" decoding="async" alt="Concert Photography">
-      <div class="cat-card-content"><div class="cat-card-num">01</div><div class="cat-card-title">Concert<br>Photography</div><div class="cat-card-sub">Live Energy</div></div>
+      <div class="cat-card-content"><div class="cat-card-num">02</div><div class="cat-card-title">Concert<br>Photography</div><div class="cat-card-sub">Live Energy</div></div>
     </a>
     <a class="cat-card" href="#portfolio" data-filter="dance">
       <img src="Dance/DSC_5197.jpg" loading="eager" decoding="async" alt="Dance Photography">
-      <div class="cat-card-content"><div class="cat-card-num">02</div><div class="cat-card-title">Dance<br>Photography</div><div class="cat-card-sub">Movement &amp; Expression</div></div>
+      <div class="cat-card-content"><div class="cat-card-num">03</div><div class="cat-card-title">Dance<br>Photography</div><div class="cat-card-sub">Movement &amp; Expression</div></div>
     </a>
     <a class="cat-card" href="#portfolio" data-filter="sports">
       <img src="Sports/DSC_0959.jpg" loading="eager" decoding="async" alt="Sports Photography">
-      <div class="cat-card-content"><div class="cat-card-num">03</div><div class="cat-card-title">Sports<br>Photography</div><div class="cat-card-sub">Peak Action</div></div>
+      <div class="cat-card-content"><div class="cat-card-num">04</div><div class="cat-card-title">Sports<br>Photography</div><div class="cat-card-sub">Peak Action</div></div>
     </a>
     <a class="cat-card" href="#portfolio" data-filter="dj">
       <img src="DJ/IMG_5126.jpeg" loading="eager" decoding="async" alt="DJ Photography">
-      <div class="cat-card-content"><div class="cat-card-num">04</div><div class="cat-card-title">DJ<br>Photography</div><div class="cat-card-sub">Nightlife</div></div>
+      <div class="cat-card-content"><div class="cat-card-num">05</div><div class="cat-card-title">DJ<br>Photography</div><div class="cat-card-sub">Nightlife</div></div>
     </a>
     <a class="cat-card" href="#portfolio" data-filter="music">
       <img src="Music/NU_09831.jpg" loading="eager" decoding="async" alt="Music Photography">
-      <div class="cat-card-content"><div class="cat-card-num">05</div><div class="cat-card-title">Music<br>Photography</div><div class="cat-card-sub">Artists &amp; Soul</div></div>
+      <div class="cat-card-content"><div class="cat-card-num">06</div><div class="cat-card-title">Music<br>Photography</div><div class="cat-card-sub">Artists &amp; Soul</div></div>
     </a>
     <a class="cat-card" href="#portfolio" data-filter="photoshoot">
       <img src="Photoshoot/IMG_9004.jpg" loading="eager" decoding="async" alt="Creative Photoshoots">
-      <div class="cat-card-content"><div class="cat-card-num">06</div><div class="cat-card-title">Creative<br>Photoshoots</div><div class="cat-card-sub">Portraits &amp; Concepts</div></div>
+      <div class="cat-card-content"><div class="cat-card-num">07</div><div class="cat-card-title">Creative<br>Photoshoots</div><div class="cat-card-sub">Portraits &amp; Concepts</div></div>
     </a>
     <a class="cat-card" href="#portfolio" data-filter="wildlife">
       <img src="Wildlife/IMG_9323.jpg" loading="eager" decoding="async" alt="Wildlife Photography">
-      <div class="cat-card-content"><div class="cat-card-num">07</div><div class="cat-card-title">Wildlife<br>Photography</div><div class="cat-card-sub">Nature &amp; Wild</div></div>
+      <div class="cat-card-content"><div class="cat-card-num">08</div><div class="cat-card-title">Wildlife<br>Photography</div><div class="cat-card-sub">Nature &amp; Wild</div></div>
     </a>
     <a class="cat-card" href="#portfolio" data-filter="fashion">
       <img src="Fashion/DSC_3512.jpg" loading="eager" decoding="async" alt="Fashion Photography">
-      <div class="cat-card-content"><div class="cat-card-num">08</div><div class="cat-card-title">Fashion<br>Photography</div><div class="cat-card-sub">Style &amp; Attitude</div></div>
+      <div class="cat-card-content"><div class="cat-card-num">09</div><div class="cat-card-title">Fashion<br>Photography</div><div class="cat-card-sub">Style &amp; Attitude</div></div>
     </a>
   </div>
 </section>
@@ -2575,6 +2634,7 @@
             <div class="custom-dropdown-item" data-value="Music / Artists" onclick="selectCategory(this)">Music / Artists</div>
             <div class="custom-dropdown-item" data-value="Creative Photoshoot" onclick="selectCategory(this)">Creative Photoshoot</div>
             <div class="custom-dropdown-item" data-value="Wildlife Photography" onclick="selectCategory(this)">Wildlife Photography</div>
+            <div class="custom-dropdown-item" data-value="Brand / Product Shoot" onclick="selectCategory(this)">Brand / Product Shoot</div>
           </div>
         </div>
       </div>
@@ -2654,6 +2714,7 @@
         <button class="admin-cat-tab" data-cat="photoshoot" onclick="adminSetCat(this)">Photoshoot</button>
         <button class="admin-cat-tab" data-cat="sports" onclick="adminSetCat(this)">Sports</button>
         <button class="admin-cat-tab" data-cat="wildlife" onclick="adminSetCat(this)">Wildlife</button>
+        <button class="admin-cat-tab" data-cat="brand" onclick="adminSetCat(this)">Brand Shoot</button>
       </div>
       <div class="admin-upload-zone" id="admin-drop-zone">
         <input type="file" id="admin-file-input" accept="image/*" multiple onchange="adminHandleFiles(this.files)">
@@ -2955,7 +3016,7 @@
   (function() {
     const labelEl = document.getElementById('filter-label');
     if (!labelEl) return;
-    const labels = { all:'Showing all photos', concerts:'Showing Concert photos', dance:'Showing Dance photos', dj:'Showing DJ photos', photoshoot:'Showing Photoshoot photos', music:'Showing Music photos', sports:'Showing Sports photos', wildlife:'Showing Wildlife photos', fashion:'Showing Fashion photos' };
+    const labels = { all:'Showing all photos', concerts:'Showing Concert photos', dance:'Showing Dance photos', dj:'Showing DJ photos', photoshoot:'Showing Photoshoot photos', music:'Showing Music photos', sports:'Showing Sports photos', wildlife:'Showing Wildlife photos', fashion:'Showing Fashion photos', brand:'Showing Brand Shoot photos' };
     let typeTimer = null;
     function typewrite(text) {
       if (typeTimer) clearTimeout(typeTimer);
@@ -3122,7 +3183,7 @@ window.toggleFaq = function(btn) {
 // ── ADMIN PANEL — Cloudinary Edition ──
 (function() {
   const ADMIN_HASH    = '#admin';
-  const ADMIN_PW      = 'moodin2025';
+  const ADMIN_PW      = 'sukhsimar';
   const SESSION_KEY   = 'mip_admin_auth';
   const CLD_CLOUD     = 'dkombok4m';          // Cloudinary cloud name
   const CLD_PRESET    = 'moodinpixels';       // Unsigned upload preset
@@ -3133,7 +3194,7 @@ window.toggleFaq = function(btn) {
 
   // ── Category → tag mapping (used to fetch & filter) ──
   // Each photo gets tagged with its category on upload
-  const CATS = ['concerts','dance','dj','fashion','music','photoshoot','sports','wildlife'];
+  const CATS = ['concerts','dance','dj','fashion','music','photoshoot','sports','wildlife','brand'];
 
   // ── Tiny local index: { cat: [ {id, url, public_id} ] }
   // Keeps the gallery fast — no API call needed on every page load
