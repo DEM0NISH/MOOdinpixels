@@ -240,23 +240,6 @@
   .sticky-book-cta:hover { background: var(--accent2); }
   @media (max-width: 700px) { #sticky-book { padding: 0.8rem 1rem; } .sticky-book-text { display: none; } }
 
-  /* ── SOCIAL PROOF LIVE BADGE ── */
-  #live-badge {
-    position: fixed; top: 5.5rem; right: 1.5rem; z-index: 8000;
-    background: rgba(8,8,8,0.88);
-    border: 1px solid rgba(200,200,200,0.12);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    padding: 0.55rem 1rem;
-    font-family: 'Inter', sans-serif; font-size: 0.68rem;
-    color: var(--muted); display: flex; align-items: center; gap: 0.5rem;
-    transform: translateX(110%);
-    transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
-    max-width: 220px;
-  }
-  #live-badge.show { transform: translateX(0); }
-  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #6ee87a; flex-shrink: 0; animation: liveDot 1.5s ease infinite; }
-  @keyframes liveDot { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
   /* ── PRICING SECTION ── */
   .pricing-section {
     padding: 6rem 3rem;
@@ -798,6 +781,7 @@
   }
   .nav-links a:hover { color: var(--text); }
   .nav-cta {
+    margin-left: auto;
     border: 1px solid var(--border); padding: 0.55rem 1.4rem;
     font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
     color: var(--text); text-decoration: none;
@@ -1772,8 +1756,6 @@
     60%  { box-shadow: 0 0 0 6px rgba(110,232,122,0); }
     100% { box-shadow: 0 0 0 0 rgba(110,232,122,0); }
   }
-  #nav-avail { margin-left: auto; }
-  @media (max-width: 900px) { #nav-avail { display: none; } }
   .hero-avail { margin-bottom: 1.2rem; }
 
   /* ── FILTER LABEL ── */
@@ -2048,9 +2030,6 @@
     <li><a href="#faq">FAQ</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <div class="avail-badge" id="nav-avail">
-    <span class="avail-dot"></span>Available for Bookings
-  </div>
   <a href="#contact" class="nav-cta">Book Now</a>
   <button id="mode-toggle" aria-label="Toggle light/dark mode">
     <svg id="mode-icon-dark" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
@@ -2676,12 +2655,6 @@
   </div>
 </div>
 
-<!-- LIVE SOCIAL PROOF BADGE -->
-<div id="live-badge">
-  <span class="live-dot"></span>
-  <span id="live-badge-text">Someone just viewed the portfolio</span>
-</div>
-
 <!-- RIGHT-CLICK TOAST -->
 <div id="no-rightclick-toast">© MoodinPixels — All Rights Reserved</div>
 
@@ -3135,31 +3108,6 @@
   }, { passive: true });
 })();
 
-// ── LIVE SOCIAL PROOF BADGE ──
-(function() {
-  const badge = document.getElementById('live-badge');
-  const textEl = document.getElementById('live-badge-text');
-  if (!badge || !textEl) return;
-  const messages = [
-    'Someone in Jaipur viewed the portfolio',
-    'A visitor is exploring Concert shots',
-    '3 people viewed this site today',
-    'Someone just checked the pricing',
-    'A visitor from Rajasthan is browsing',
-    'Someone is exploring Dance photography',
-    '5 visitors this hour',
-    'Someone just sent a booking enquiry',
-  ];
-  let idx = Math.floor(Math.random() * messages.length);
-  function showBadge() {
-    textEl.textContent = messages[idx % messages.length];
-    idx++;
-    badge.classList.add('show');
-    setTimeout(() => badge.classList.remove('show'), 4500);
-  }
-  setTimeout(() => { showBadge(); setInterval(showBadge, 18000); }, 6000);
-})();
-
 // ── FAQ TOGGLE ──
 window.toggleFaq = function(btn) {
   const item = btn.closest('.faq-item');
@@ -3183,8 +3131,14 @@ window.toggleFaq = function(btn) {
 // ── ADMIN PANEL — Cloudinary Edition ──
 (function() {
   const ADMIN_HASH    = '#admin';
-  const ADMIN_PW      = 'sukhsimar';
+  const ADMIN_PW_HASH = '60ac2b2b8263c7cb611301feeb505583a6e42f40f6bff0ec354f00781d554e93'; // SHA-256 of the password — not readable as plain text
   const SESSION_KEY   = 'mip_admin_auth';
+
+  // ── Hash helper (SHA-256, hex) — used to check the password without storing it in plain text ──
+  async function sha256Hex(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
   const CLD_CLOUD     = 'dkombok4m';          // Cloudinary cloud name
   const CLD_PRESET    = 'moodinpixels';       // Unsigned upload preset
   const CLD_FOLDER    = 'moodinpixels';       // Root folder in Cloudinary
@@ -3268,10 +3222,11 @@ window.toggleFaq = function(btn) {
     if (location.hash === ADMIN_HASH) history.replaceState(null, '', location.pathname);
   };
 
-  window.adminLogin = function() {
+  window.adminLogin = async function() {
     const pw  = document.getElementById('admin-pw').value;
     const err = document.getElementById('admin-pw-err');
-    if (pw === ADMIN_PW) {
+    const pwHash = await sha256Hex(pw);
+    if (pwHash === ADMIN_PW_HASH) {
       sessionStorage.setItem(SESSION_KEY, '1');
       document.getElementById('admin-login').style.display = 'none';
       document.getElementById('admin-dashboard').style.display = 'block';
